@@ -4,11 +4,13 @@ import { BookOpen, Users, MapPin, Search } from 'lucide-react';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { SoftInput } from '../../components/ui/SoftInput';
 import { SANTRI_LIRBOYO_SEED } from '../../mocks/santri.seed';
+import { useSession } from '../../lib/auth.client';
 
 export const KelasPage: React.FC = () => {
-  // Current logged in Mustahiq is assigned to exactly one section and location
+  const { data: sessionData } = useSession();
+
   const mockMustahiq = {
-    name: 'Charis Wahyudi',
+    name: sessionData?.user?.name || 'Pengajar',
     role: 'Mustahiq',
     bagianClass: 'Bagian A',
     lokalRoom: 'Lokal 01',
@@ -43,7 +45,7 @@ export const KelasPage: React.FC = () => {
         </div>
       </div>
 
-      {/* Selected Class Banner Info (Mustahiq is strictly locked to 1 Class/Lokal) */}
+      {/* Selected Class Banner Info */}
       <GlassCard variant="neumorph" className="p-4 mb-6 border border-blue-100">
         <div className="flex items-center justify-between">
           <div>

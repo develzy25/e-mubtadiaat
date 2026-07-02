@@ -1,9 +1,12 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { BookOpen, ChevronRight } from 'lucide-react';
 import { GlassCard } from '../../../components/ui/GlassCard';
 import { LIRBOYO_SCHEDULE_SEED } from '../../../mocks/schedule.seed';
+import { PrototypeModal } from '../../../components/ui/PrototypeModal';
 
 export const TeachingScheduleWidget: React.FC = () => {
+  const [showProtoModal, setShowProtoModal] = useState(false);
+
   // Map schedule items to UI items
   const scheduleItems = LIRBOYO_SCHEDULE_SEED.slice(0, 3).map((item, idx) => ({
     timeStart: item.session === 1 ? '07:30' : '09:00',
@@ -19,7 +22,11 @@ export const TeachingScheduleWidget: React.FC = () => {
     <GlassCard variant="neumorph" className="w-full my-6 p-4 sm:p-5">
       <div className="flex items-center justify-between mb-4">
         <h3 className="text-base font-bold text-slate-800">Jadwal Mengajar Hari Ini</h3>
-        <button type="button" className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-0.5">
+        <button 
+          type="button" 
+          onClick={() => setShowProtoModal(true)}
+          className="text-xs font-semibold text-blue-600 hover:text-blue-700 flex items-center gap-0.5"
+        >
           Lihat Semua <ChevronRight className="w-3.5 h-3.5" />
         </button>
       </div>
@@ -55,6 +62,13 @@ export const TeachingScheduleWidget: React.FC = () => {
           </div>
         ))}
       </div>
+
+      {/* Prototype Warning Modal */}
+      <PrototypeModal 
+        isOpen={showProtoModal} 
+        onClose={() => setShowProtoModal(false)} 
+        featureName="Jadwal Mengajar Seluruhnya" 
+      />
     </GlassCard>
   );
 };

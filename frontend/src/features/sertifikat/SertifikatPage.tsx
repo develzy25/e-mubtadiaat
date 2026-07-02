@@ -4,6 +4,7 @@ import { ShieldCheck, Save, CheckCircle2 } from 'lucide-react';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { PremiumButton } from '../../components/ui/PremiumButton';
 import { SANTRI_LIRBOYO_SEED } from '../../mocks/santri.seed';
+import { PrototypeModal } from '../../components/ui/PrototypeModal';
 
 interface StudentSertifikat {
   santriId: string;
@@ -16,6 +17,7 @@ interface StudentSertifikat {
 
 export const SertifikatPage: React.FC = () => {
   const [isSaved, setIsSaved] = useState(false);
+  const [showProtoModal, setShowProtoModal] = useState(false);
   const [data, setData] = useState<StudentSertifikat[]>(
     SANTRI_LIRBOYO_SEED.filter((s) => s.bagianClass === 'Bagian A').map((s) => ({
       santriId: s.id,
@@ -46,6 +48,11 @@ export const SertifikatPage: React.FC = () => {
 
   const handleSave = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowProtoModal(true);
+  };
+
+  const handleConfirmMockSave = () => {
+    setShowProtoModal(false);
     setIsSaved(true);
     setTimeout(() => {
       setIsSaved(false);
@@ -77,7 +84,7 @@ export const SertifikatPage: React.FC = () => {
           className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-2xl mb-4 flex items-center gap-3"
         >
           <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-          <span className="text-sm font-semibold">Data sertifikat berhasil disinkronisasi ke server!</span>
+          <span className="text-sm font-semibold">Data sertifikat berhasil disinkronisasi! (Mode Simulasi)</span>
         </motion.div>
       )}
 
@@ -156,6 +163,13 @@ export const SertifikatPage: React.FC = () => {
       >
         Simpan Nilai Sertifikasi
       </PremiumButton>
+
+      {/* Prototype Modal */}
+      <PrototypeModal 
+        isOpen={showProtoModal} 
+        onClose={handleConfirmMockSave} 
+        featureName="Simpan Nilai Ujian Kelulusan Praktik" 
+      />
     </motion.div>
   );
 };

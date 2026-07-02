@@ -4,6 +4,8 @@ import { Save, CheckCircle2, FileSpreadsheet } from 'lucide-react';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { PremiumButton } from '../../components/ui/PremiumButton';
 import { SANTRI_LIRBOYO_SEED } from '../../mocks/santri.seed';
+import { PrototypeModal } from '../../components/ui/PrototypeModal';
+import { useSession } from '../../lib/auth.client';
 
 interface StudentGrade {
   santriId: string;
@@ -15,8 +17,11 @@ interface StudentGrade {
 }
 
 export const InputNilaiPage: React.FC = () => {
+  const { data: sessionData } = useSession();
   const [selectedKitab, setSelectedKitab] = useState('Mukhtashor Jiddan');
-  
+  const [showProtoModal, setShowProtoModal] = useState(false);
+  const [isSaved, setIsSaved] = useState(false);
+
   // Enforce Lirboyo rule: Nilai Rapor/Khosh only ranges 4 - 9
   const [grades, setGrades] = useState<StudentGrade[]>(
     SANTRI_LIRBOYO_SEED.filter((s) => s.bagianClass === 'Bagian A').map((s) => ({
@@ -28,8 +33,6 @@ export const InputNilaiPage: React.FC = () => {
       catatan: 'Baik dan Istiqomah',
     }))
   );
-
-  const [isSaved, setIsSaved] = useState(false);
 
   const handleCellChange = (
     index: number,
@@ -50,6 +53,11 @@ export const InputNilaiPage: React.FC = () => {
 
   const handleSaveGrades = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowProtoModal(true);
+  };
+
+  const handleConfirmMockSave = () => {
+    setShowProtoModal(false);
     setIsSaved(true);
     setTimeout(() => {
       setIsSaved(false);
@@ -64,6 +72,8 @@ export const InputNilaiPage: React.FC = () => {
     if (score >= 6) return 'المتوسط الثاني';
     return 'الرديء';
   };
+
+  const waliKelasName = sessionData?.user?.name || 'Wali Kelas';
 
   return (
     <motion.div
@@ -93,7 +103,7 @@ export const InputNilaiPage: React.FC = () => {
           className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-2xl mb-4 flex items-center gap-3"
         >
           <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-          <span className="text-sm font-semibold">Semua nilai berhasil disinkronisasi ke Cloudflare D1!</span>
+          <span className="text-sm font-semibold">Semua nilai berhasil disinkronisasi! (Mode Simulasi)</span>
         </motion.div>
       )}
 
@@ -113,7 +123,7 @@ export const InputNilaiPage: React.FC = () => {
             </select>
           </div>
           <div className="text-xs font-semibold text-slate-400 text-right sm:self-end">
-            Wali Kelas: <span className="text-slate-700 font-bold">Charis Wahyudi (Bagian A)</span>
+            Wali Kelas: <span className="text-slate-700 font-bold">{waliKelasName} (Bagian A)</span>
           </div>
         </div>
       </GlassCard>
@@ -198,6 +208,13 @@ export const InputNilaiPage: React.FC = () => {
       >
         Simpan & Kunci Nilai
       </PremiumButton>
+
+      {/* Prototype Modal */}
+      <PrototypeModal 
+        isOpen={showProtoModal} 
+        onClose={handleConfirmMockSave} 
+        featureName="Simpan & Kunci Nilai Ujian Semester" 
+      />
     </motion.div>
   );
 };

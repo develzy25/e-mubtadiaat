@@ -5,6 +5,7 @@ import { GlassCard } from '../../components/ui/GlassCard';
 import { SoftInput } from '../../components/ui/SoftInput';
 import { PremiumButton } from '../../components/ui/PremiumButton';
 import { SANTRI_LIRBOYO_SEED, type Santri } from '../../mocks/santri.seed';
+import { PrototypeModal } from '../../components/ui/PrototypeModal';
 
 export const MemorizationPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
@@ -12,6 +13,7 @@ export const MemorizationPage: React.FC = () => {
   const [nadzomTitle, setNadzomTitle] = useState('Tuhfatul Athfal');
   const [baitInput, setBaitInput] = useState('');
   const [isSaved, setIsSaved] = useState(false);
+  const [showProtoModal, setShowProtoModal] = useState(false);
 
   const filteredSantri = SANTRI_LIRBOYO_SEED.filter((s) =>
     s.bagianClass === 'Bagian A' && (
@@ -24,6 +26,11 @@ export const MemorizationPage: React.FC = () => {
     e.preventDefault();
     if (!selectedSantri || !baitInput) return;
 
+    setShowProtoModal(true);
+  };
+
+  const handleConfirmMockSave = () => {
+    setShowProtoModal(false);
     setIsSaved(true);
     setTimeout(() => {
       setIsSaved(false);
@@ -58,7 +65,7 @@ export const MemorizationPage: React.FC = () => {
           className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-2xl mb-4 flex items-center gap-3"
         >
           <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-          <span className="text-sm font-semibold">Setoran Nadzom berhasil disimpan!</span>
+          <span className="text-sm font-semibold">Setoran Nadzom berhasil disimpan! (Mode Simulasi)</span>
         </motion.div>
       )}
 
@@ -131,7 +138,7 @@ export const MemorizationPage: React.FC = () => {
             type="text"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
-            placeholder="Ketik nama santri atau NISN..."
+            placeholder="Ketik nama santri..."
             leftIcon={<Search className="w-5 h-5" />}
           />
 
@@ -168,6 +175,13 @@ export const MemorizationPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Prototype Modal */}
+      <PrototypeModal 
+        isOpen={showProtoModal} 
+        onClose={handleConfirmMockSave} 
+        featureName="Simpan Setoran Nadzom Ke Database" 
+      />
     </motion.div>
   );
 };

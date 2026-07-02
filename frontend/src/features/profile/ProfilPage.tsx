@@ -1,26 +1,36 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { motion } from 'framer-motion';
 import { User, LogOut, Shield, MapPin, ChevronRight } from 'lucide-react';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { PremiumButton } from '../../components/ui/PremiumButton';
-import { signOut } from '../../lib/auth.client';
+import { signOut, useSession } from '../../lib/auth.client';
 import { useNavigate } from 'react-router';
+import { PrototypeModal } from '../../components/ui/PrototypeModal';
 
 export const ProfilPage: React.FC = () => {
   const navigate = useNavigate();
+  const { data: sessionData } = useSession();
+  const [showProtoModal, setShowProtoModal] = useState(false);
+  const [protoFeature, setProtoFeature] = useState('');
 
   const user = {
-    name: 'Charis Wahyudi',
+    name: sessionData?.user?.name || 'Pengajar',
     role: 'Mustahiq (Wali Kelas)',
     nipg: 'MPHM-2026-0001',
     assignedClass: 'Bagian A (Lokal 01)',
-    email: 'charis.wahyudi@lirboyo.net',
+    email: sessionData?.user?.email || '',
   };
 
   const handleLogout = async () => {
     await signOut();
     navigate('/login');
   };
+
+  const triggerPrototype = (feature: string) => {
+    setProtoFeature(feature);
+    setShowProtoModal(true);
+  };
+
   return (
     <motion.div
       initial={{ opacity: 0, y: 15 }}
@@ -76,7 +86,12 @@ export const ProfilPage: React.FC = () => {
       <div className="flex flex-col gap-3">
         <span className="text-xs font-bold text-slate-500">Sistem & Keamanan</span>
 
-        <GlassCard variant="neumorph" hoverEffect className="p-4 flex items-center justify-between cursor-pointer">
+        <GlassCard 
+          variant="neumorph" 
+          hoverEffect 
+          className="p-4 flex items-center justify-between cursor-pointer"
+          onClick={() => triggerPrototype('Ubah Kata Sandi')}
+        >
           <div className="flex items-center gap-3">
             <User className="w-5 h-5 text-slate-600" />
             <span className="text-sm font-bold text-slate-700">Ubah Kata Sandi</span>
@@ -93,6 +108,13 @@ export const ProfilPage: React.FC = () => {
           Keluar dari Aplikasi
         </PremiumButton>
       </div>
+
+      {/* Prototype Modal */}
+      <PrototypeModal 
+        isOpen={showProtoModal} 
+        onClose={() => setShowProtoModal(false)} 
+        featureName={protoFeature} 
+      />
     </motion.div>
   );
 };

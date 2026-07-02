@@ -4,6 +4,7 @@ import { BookOpen, FileText, X, CheckCircle, Printer } from 'lucide-react';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { PremiumButton } from '../../components/ui/PremiumButton';
 import { SANTRI_LIRBOYO_SEED } from '../../mocks/santri.seed';
+import { PrototypeModal } from '../../components/ui/PrototypeModal';
 
 interface StudentReport {
   id: string;
@@ -24,6 +25,7 @@ interface StudentReport {
 
 export const ERaportPage: React.FC = () => {
   const [selectedStudent, setSelectedStudent] = useState<StudentReport | null>(null);
+  const [showProtoModal, setShowProtoModal] = useState(false);
 
   // Compile student report card mock records
   const reports: StudentReport[] = SANTRI_LIRBOYO_SEED.filter(
@@ -49,6 +51,10 @@ export const ERaportPage: React.FC = () => {
       statusKenaikan: 'Naik Kelas',
     };
   });
+
+  const handlePrintRaport = () => {
+    setShowProtoModal(true);
+  };
 
   return (
     <motion.div
@@ -162,7 +168,7 @@ export const ERaportPage: React.FC = () => {
               {/* Actions */}
               <div className="flex gap-3">
                 <PremiumButton
-                  onClick={() => window.print()}
+                  onClick={handlePrintRaport}
                   variant="secondary"
                   className="flex-1 text-xs"
                   leftIcon={<Printer className="w-4 h-4" />}
@@ -181,6 +187,13 @@ export const ERaportPage: React.FC = () => {
           </div>
         )}
       </AnimatePresence>
+
+      {/* Prototype Modal */}
+      <PrototypeModal 
+        isOpen={showProtoModal} 
+        onClose={() => setShowProtoModal(false)} 
+        featureName="Cetak Raport Fisik PDF" 
+      />
     </motion.div>
   );
 };

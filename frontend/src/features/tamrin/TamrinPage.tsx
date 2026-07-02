@@ -4,6 +4,7 @@ import { BookOpen, Save, CheckCircle2, FileText } from 'lucide-react';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { PremiumButton } from '../../components/ui/PremiumButton';
 import { SANTRI_LIRBOYO_SEED } from '../../mocks/santri.seed';
+import { PrototypeModal } from '../../components/ui/PrototypeModal';
 
 interface TamrinSchedule {
   id: string;
@@ -50,6 +51,7 @@ export const TamrinPage: React.FC = () => {
   const [selectedSchedule, setSelectedSchedule] = useState<TamrinSchedule | null>(null);
   const [inputs, setInputs] = useState<StudentTamrinInput[]>([]);
   const [isSaved, setIsSaved] = useState(false);
+  const [showProtoModal, setShowProtoModal] = useState(false);
 
   const handleSelectSchedule = (sched: TamrinSchedule) => {
     setSelectedSchedule(sched);
@@ -91,6 +93,11 @@ export const TamrinPage: React.FC = () => {
 
   const handleSaveTamrin = (e: React.FormEvent) => {
     e.preventDefault();
+    setShowProtoModal(true);
+  };
+
+  const handleConfirmMockSave = () => {
+    setShowProtoModal(false);
     setIsSaved(true);
     setTimeout(() => {
       setIsSaved(false);
@@ -123,7 +130,7 @@ export const TamrinPage: React.FC = () => {
           className="bg-emerald-50 border border-emerald-200 text-emerald-700 p-4 rounded-2xl mb-4 flex items-center gap-3"
         >
           <CheckCircle2 className="w-5 h-5 text-emerald-600 shrink-0" />
-          <span className="text-sm font-semibold">Data Tamrin berhasil disimpan dan disinkronisasi!</span>
+          <span className="text-sm font-semibold">Data Tamrin berhasil disimpan! (Mode Simulasi)</span>
         </motion.div>
       )}
 
@@ -265,6 +272,13 @@ export const TamrinPage: React.FC = () => {
           </div>
         </div>
       )}
+
+      {/* Prototype Modal */}
+      <PrototypeModal 
+        isOpen={showProtoModal} 
+        onClose={handleConfirmMockSave} 
+        featureName="Simpan Tamrin Harian" 
+      />
     </motion.div>
   );
 };

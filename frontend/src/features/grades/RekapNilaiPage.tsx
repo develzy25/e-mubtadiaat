@@ -4,6 +4,8 @@ import { ClipboardList, Printer, Search } from 'lucide-react';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { SoftInput } from '../../components/ui/SoftInput';
 import { SANTRI_LIRBOYO_SEED } from '../../mocks/santri.seed';
+import { useSession } from '../../lib/auth.client';
+import { PrototypeModal } from '../../components/ui/PrototypeModal';
 
 interface StudentRekap {
   santriId: string;
@@ -18,9 +20,11 @@ interface StudentRekap {
 
 export const RekapNilaiPage: React.FC = () => {
   const [searchTerm, setSearchTerm] = useState('');
+  const { data: sessionData } = useSession();
+  const [showProtoModal, setShowProtoModal] = useState(false);
 
   const mockMustahiq = {
-    name: 'Charis Wahyudi',
+    name: sessionData?.user?.name || 'Pengajar',
     role: 'Mustahiq',
     bagianClass: 'Bagian A',
     lokalRoom: 'Lokal 01',
@@ -33,7 +37,7 @@ export const RekapNilaiPage: React.FC = () => {
   
   // Official Lirboyo Al Bayan conversions
   const getAlBayan = (score: number): string => {
-    if (score >= 9) return 'الجid الأول'; // Jayyid Awal
+    if (score >= 9) return 'الجيد الأول'; // Jayyid Awal
     if (score >= 8) return 'الجيد الثاني'; // Jayyid Tsani
     if (score >= 7) return 'المتوسط الأول'; // Mutawassith Awal
     if (score >= 6) return 'المتوسط الثاني'; // Mutawassith Tsani
@@ -65,6 +69,11 @@ export const RekapNilaiPage: React.FC = () => {
   );
 
   const handlePrint = () => {
+    setShowProtoModal(true);
+  };
+
+  const handleConfirmPrint = () => {
+    setShowProtoModal(false);
     window.print();
   };
 
@@ -211,7 +220,7 @@ export const RekapNilaiPage: React.FC = () => {
           <div className="flex">
             <span className="w-24">Wali Kelas</span>
             <span className="mr-2">:</span>
-            <span>Charis Wahyudi</span>
+            <span>{mockMustahiq.name}</span>
           </div>
           <div className="flex">
             <span className="w-24">Lokal Ruangan</span>
@@ -259,7 +268,7 @@ export const RekapNilaiPage: React.FC = () => {
             <span>Mengetahui,</span>
             <span className="mt-1">Wali Kelas Bagian A</span>
             <div className="h-16 w-32 border-b border-black border-dashed mt-4 flex items-end justify-center pb-0.5">
-              <span>( Charis Wahyudi )</span>
+              <span>( {mockMustahiq.name} )</span>
             </div>
           </div>
           <div className="flex flex-col items-center">
@@ -271,6 +280,13 @@ export const RekapNilaiPage: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {/* Prototype Modal */}
+      <PrototypeModal 
+        isOpen={showProtoModal} 
+        onClose={handleConfirmPrint} 
+        featureName="Cetak Rekap Hasil Evaluasi PDF" 
+      />
     </>
   );
 };
