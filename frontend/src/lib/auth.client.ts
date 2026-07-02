@@ -1,7 +1,7 @@
 import { createAuthClient } from "better-auth/react"
 
 export const authClient = createAuthClient({
-    baseURL: "http://localhost:8787/api/auth" // Adjust based on your Hono backend URL
+    baseURL: (import.meta.env.VITE_API_URL || 'https://backend.eppds.workers.dev/api') + '/auth'
 });
 
 export const { signIn, signUp, signOut, useSession } = authClient;

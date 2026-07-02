@@ -17,7 +17,7 @@
     {
       "binding": "DB",
       "database_name": "mubtadiat-db",
-      "database_id": "00000000-0000-0000-0000-000000000000",
+      "database_id": "e6b5c53a-6dfc-41c7-987e-26aa5a851302",
       "migrations_dir": "./drizzle"
     }
   ],
