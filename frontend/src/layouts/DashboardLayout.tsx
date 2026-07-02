@@ -78,14 +78,14 @@ export const DashboardLayout = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-[#F0F4F8] relative pb-24 flex flex-col justify-between">
+    <div className="min-h-dvh bg-[#F0F4F8] relative pb-28 flex flex-col justify-between">
       {/* Main Content Area */}
       <main className="container max-w-xl mx-auto px-4 py-6 flex-1">
         <Outlet />
       </main>
 
-      {/* Global App Footer - Fixed below the floating menu card */}
-      <footer className="fixed bottom-1.5 left-0 right-0 z-40 text-center text-[8px] text-slate-400 font-medium select-none leading-normal print:hidden">
+      {/* Global App Footer - Fixed below the floating menu card with a premium spacing gap */}
+      <footer className="fixed bottom-2.5 left-0 right-0 z-40 text-center text-[8px] text-slate-400 font-medium select-none leading-normal print:hidden">
         <p>
           Jl. KH. Abdul Karim Po. Box 140 Lirboyo Kediri &nbsp;|&nbsp; Telp. 0354-772197
         </p>
