@@ -5,7 +5,7 @@ import { BottomNavigation } from '../components/ui/BottomNavigation';
 import { SoftInput } from '../components/ui/SoftInput';
 import { PremiumButton } from '../components/ui/PremiumButton';
 import { GlassCard } from '../components/ui/GlassCard';
-import { authClient } from '../lib/auth.client';
+import { authClient, useSession, signIn } from '../lib/auth.client';
 
 export const DashboardLayout = () => {
   const [showForceModal, setShowForceModal] = useState(false);
@@ -15,6 +15,8 @@ export const DashboardLayout = () => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [isSuccess, setIsSuccess] = useState(false);
+  
+  const { data: sessionData } = useSession();
 
   useEffect(() => {
     const mustChange = localStorage.getItem('FORCE_PASSWORD_CHANGE') === 'true';
@@ -41,6 +43,8 @@ export const DashboardLayout = () => {
     setLoading(true);
     setError('');
 
+    const userEmail = sessionData?.user?.email;
+
     try {
       const { error: changeError } = await authClient.changePassword({
         newPassword: newPassword,
@@ -52,6 +56,15 @@ export const DashboardLayout = () => {
         setError(changeError.message || 'Gagal mengubah kata sandi');
       } else {
         localStorage.removeItem('FORCE_PASSWORD_CHANGE');
+        
+        // Re-authenticate programmatically so they don't get kicked out to login page
+        if (userEmail) {
+          await signIn.email({
+            email: userEmail,
+            password: newPassword,
+          });
+        }
+        
         setIsSuccess(true);
         setTimeout(() => {
           setShowForceModal(false);
