@@ -78,14 +78,14 @@ export const DashboardLayout = () => {
   };
 
   return (
-    <div className="min-h-dvh bg-[#F0F4F8] relative pb-28 flex flex-col justify-between">
+    <div className="min-h-dvh bg-[#F0F4F8] relative pb-16 flex flex-col justify-between">
       {/* Main Content Area */}
       <main className="container max-w-xl mx-auto px-4 py-6 flex-1">
         <Outlet />
       </main>
 
       {/* Global App Footer */}
-      <footer className="w-full max-w-xl mx-auto text-center text-[9px] text-slate-400 font-medium pb-8 px-6 select-none leading-relaxed print:hidden">
+      <footer className="w-full max-w-xl mx-auto text-center text-[9px] text-slate-400 font-medium pb-2 px-6 select-none leading-relaxed print:hidden">
         <p>
           Jl. KH. Abdul Karim Po. Box 140 Lirboyo Kediri &nbsp;|&nbsp; Telp. 0354-772197
         </p>
