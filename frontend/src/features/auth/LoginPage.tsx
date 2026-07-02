@@ -204,10 +204,10 @@ export const LoginPage = () => {
       {/* Corporate Address & Copyright Footer */}
       <footer className="w-full max-w-md text-center text-[10px] text-slate-400 font-medium mt-8 px-4 z-10 flex flex-col gap-1 select-none">
         <p className="leading-relaxed">
-          p3hmlirboyo@gmail.com &nbsp;|&nbsp; Jl. KH. Abdul Karim Po. Box 140 Lirboyo Kota Kediri Jawa Timur &nbsp;|&nbsp; Telp. 0354-772197
+          Jl. KH. Abdul Karim Po. Box 140 Lirboyo Kota Kediri Jawa Timur &nbsp;|&nbsp; Telp. 0354-772197
         </p>
         <p className="mt-1 font-bold text-slate-500">
-          P3HM LIRBOYO &copy; Copyright {new Date().getFullYear()}. All Rights Reserved
+          &copy; {new Date().getFullYear()} P3HM Lirboyo. All Rights Reserved.
         </p>
       </footer>
     </div>
