@@ -25,7 +25,14 @@ export interface AttendanceResponse {
 
 export const getAttendance = async (classId: string, month: string): Promise<AttendanceResponse> => {
   try {
-    const response = await fetch(`${API_URL}/attendance?classId=${classId}&month=${month}`);
+    const token = localStorage.getItem("better-auth.session_token");
+    const headers: HeadersInit = {};
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
+    const response = await fetch(`${API_URL}/attendance?classId=${classId}&month=${month}`, {
+      headers
+    });
     if (!response.ok) {
       throw new Error('Failed to fetch attendance');
     }
@@ -50,11 +57,11 @@ export const getAttendance = async (classId: string, month: string): Promise<Att
     return {
       success: true,
       data: {
-        attendanceId: 'mock-att-001',
+        attendanceId: 'mock-att-123',
         month,
         classId,
         details: mockDetails,
-      },
+      }
     };
   }
 };
@@ -66,11 +73,16 @@ export const saveAttendance = async (payload: {
   details: Partial<AttendanceDetail>[]; 
 }) => {
   try {
+    const token = localStorage.getItem("better-auth.session_token");
+    const headers: HeadersInit = {
+      'Content-Type': 'application/json',
+    };
+    if (token) {
+      headers['Authorization'] = `Bearer ${token}`;
+    }
     const response = await fetch(`${API_URL}/attendance`, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
+      headers,
       body: JSON.stringify(payload),
     });
     

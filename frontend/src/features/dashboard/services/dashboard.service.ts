@@ -16,7 +16,14 @@ export interface DashboardSummaryResponse {
 
 export const getDashboardSummary = async (month?: string): Promise<DashboardSummaryResponse> => {
   const query = month ? `?month=${month}` : '';
-  const response = await fetch(`${API_URL}/dashboard/summary${query}`);
+  const token = localStorage.getItem("better-auth.session_token");
+  const headers: HeadersInit = {};
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
+  const response = await fetch(`${API_URL}/dashboard/summary${query}`, {
+    headers
+  });
   
   if (!response.ok) {
     throw new Error('Failed to fetch dashboard summary');
