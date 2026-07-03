@@ -38,15 +38,15 @@ INSERT INTO feature_flags (id, key, name, is_enabled, created_at, updated_at) VA
 ('feat-003', 'FEATURE_QR_SCAN', 'QR Scan Absensi', 0, CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
 
 -- 3. Insert Users
--- CATATAN: Kolom 'username' di tabel users menyimpan identifier login (bukan email).
--- Password semua user: mubtadiaat123
--- Hash di bawah adalah bcrypt hash dari 'mubtadiaat123'
+-- CATATAN: Kolom 'username' di tabel users menyimpan email login.
+-- Login page mengkonversi input username → username@mubtadiaat.id sebelum dikirim ke BetterAuth.
+-- Oleh karena itu nilai di sini HARUS menggunakan format email lengkap.
 INSERT INTO users (id, name, username, email_verified, image, role, created_at, updated_at) VALUES
 -- Admin (role 1)
-('user-admin', 'Administrator', 'admin', 1, null, 1, unixepoch(), unixepoch()),
+('user-admin', 'Administrator', 'admin@mubtadiaat.id', 1, null, 1, unixepoch(), unixepoch()),
 -- Mustahiq demo accounts (role 4)
-('user-charis-wahyudi',       'Charis Wahyudi',       'charis.wahyudi',       1, null, 4, unixepoch(), unixepoch()),
-('user-abdurrahman-addakhel', 'Abdurrahman Addakhel', 'abdurrahman.addakhel', 1, null, 4, unixepoch(), unixepoch());
+('user-charis-wahyudi',       'Charis Wahyudi',       'charis.wahyudi@mubtadiaat.id',       1, null, 4, unixepoch(), unixepoch()),
+('user-abdurrahman-addakhel', 'Abdurrahman Addakhel', 'abdurrahman.addakhel@mubtadiaat.id', 1, null, 4, unixepoch(), unixepoch());
 
 -- 4. Insert Accounts (BetterAuth credential-provider rows)
 -- password = scrypt hash of 'mubtadiaat123' (generated via @better-auth/utils hashPassword)
