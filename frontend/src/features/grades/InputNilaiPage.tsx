@@ -42,8 +42,8 @@ export const InputNilaiPage: React.FC = () => {
     const updated = [...grades];
     if (field === 'ujian') {
       let num = typeof value === 'string' ? parseInt(value, 10) : value;
-      if (isNaN(num) || num < 4) num = 4; // Min grade is 4
-      if (num > 9) num = 9;   // Max grade is 9
+      if (isNaN(num) || num < 0) num = 0; // range 0-10
+      if (num > 10) num = 10;
       updated[index][field] = num;
     } else {
       updated[index][field] = value as string;
@@ -147,7 +147,8 @@ export const InputNilaiPage: React.FC = () => {
               {grades.map((grade, index) => {
                 // Calculate Khosh automatically using Bab 2 & Bab 4 rounding rules
                 const khoshRaw = (grade.tamrin + grade.ujian) / 2;
-                const finalKhosh = Math.round(khoshRaw); // Math.round handles < 0.5 down, >= 0.5 up
+                let finalKhosh = Math.round(khoshRaw); 
+                finalKhosh = Math.max(4, Math.min(9, finalKhosh)); // Clamped 4-9
                 
                 let scoreColor = 'text-slate-800';
                 if (finalKhosh >= 8) scoreColor = 'text-emerald-600 font-bold';
@@ -170,8 +171,8 @@ export const InputNilaiPage: React.FC = () => {
                     <td className="py-2 px-3 text-center">
                       <input
                         type="number"
-                        min="4"
-                        max="9"
+                        min="0"
+                        max="10"
                         value={grade.ujian}
                         onChange={(e) => handleCellChange(index, 'ujian', e.target.value)}
                         className="w-14 h-9 text-center neumorph-pressed rounded-lg text-xs font-bold text-slate-800 focus:ring-2 focus:ring-blue-300/30 outline-none"

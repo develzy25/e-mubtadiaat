@@ -1,37 +1,39 @@
 # 71. Comprehensive Database Schema Specification (D1 SQLite)
 
-## Daftar Tabel Resmi
-1. `users` (id UUID, email, name, password_hash, status, created_at, updated_at, deleted_at)
-2. `roles` (id UUID, name, description, created_at, updated_at)
-3. `permissions` (id UUID, name, resource, action, created_at)
-4. `role_permissions` (role_id UUID, permission_id UUID)
-5. `user_roles` (user_id UUID, role_id UUID)
-6. `santri` (id UUID, nisn, nama_lengkap, kelas_id, kamar_id, status_aktif, photo_media_id, created_at, updated_at, deleted_at)
-7. `alumni` (id UUID, santri_id UUID, tahun_lulus, no_ijazah, status_domisili)
-8. `guru` (id UUID, user_id UUID, nipg, nama, jenis_role, spesialisasi_kitab)
-9. `kelas` (id UUID, nama_kelas, tingkatan_id UUID, room_code)
-10. `tingkatan` (id UUID, nama_tingkatan, urutan)
-11. `kitab` (id UUID, nama_kitab, pengarang, tingkat_kesulitan)
-12. `mata_pelajaran` (id UUID, kode_mapel, nama_mapel, bobot_sks)
-13. `jadwal` (id UUID, kelas_id UUID, mapel_id UUID, guru_id UUID, hari, jam_mulai, jam_selesai)
-14. `attendance` (id UUID, date DATE, class_id UUID, recorded_by_user_id UUID, created_at, updated_at)
-15. `attendance_details` (id UUID, attendance_id UUID, santri_id UUID, status ENUM('HADIR','SAKIT','IZIN','ALPHA'), notes TEXT)
-16. `grades` (id UUID, semester_id UUID, class_id UUID, santri_id UUID, mapel_id UUID, score NUMERIC, grade_char VARCHAR)
-17. `grade_items` (id UUID, grade_id UUID, item_name VARCHAR, score NUMERIC, weight NUMERIC)
-18. `memorization` (id UUID, santri_id UUID, evaluator_user_id UUID, kitab_id UUID, date DATE, score NUMERIC)
-19. `memorization_items` (id UUID, memorization_id UUID, start_verse VARCHAR, end_verse VARCHAR, status VARCHAR)
-20. `reports` (id UUID, santri_id UUID, semester_id UUID, gpa NUMERIC, status ENUM('DRAFT','VERIFIED','PUBLISHED'), pdf_media_id UUID)
-21. `ijazah` (id UUID, santri_id UUID, no_ijazah VARCHAR, issue_date DATE, pdf_media_id UUID)
-22. `sertifikat` (id UUID, santri_id UUID, title VARCHAR, pdf_media_id UUID)
-23. `activities` (id UUID, user_id UUID, action VARCHAR, details TEXT, created_at)
-24. `notifications` (id UUID, title VARCHAR, body TEXT, target_role VARCHAR, created_at)
-25. `notification_reads` (notification_id UUID, user_id UUID, read_at)
-26. `audit_logs` (id UUID, user_id UUID, entity_name VARCHAR, entity_id UUID, old_values TEXT, new_values TEXT, ip_address VARCHAR, created_at)
-27. `media` (id UUID, public_id VARCHAR, provider VARCHAR, provider_id VARCHAR, secure_url TEXT, resource_type VARCHAR, mime_type VARCHAR, extension VARCHAR, etag VARCHAR, version VARCHAR, folder VARCHAR, width INT, height INT, bytes INT, uploaded_at TIMESTAMP)
-28. `offline_queue` (id UUID, payload TEXT, endpoint VARCHAR, method VARCHAR, status VARCHAR, retry_count INT, created_at)
-29. `offline_failed` (id UUID, queue_id UUID, error_message TEXT, failed_at TIMESTAMP)
-30. `offline_logs` (id UUID, action VARCHAR, details TEXT, created_at)
-31. `sessions` (id UUID, user_id UUID, token VARCHAR, expires_at TIMESTAMP)
-32. `refresh_tokens` (id UUID, user_id UUID, token VARCHAR, expires_at TIMESTAMP)
-33. `feature_flags` (id UUID, key VARCHAR, is_enabled BOOLEAN, description TEXT)
-34. `settings` (id UUID, key VARCHAR, value TEXT, updated_by UUID, updated_at TIMESTAMP)
+## Daftar Tabel Resmi (Drizzle ORM)
+
+1. **`roles`**: Menyimpan data role untuk RBAC (Admin, Mundzir, Mufatish, Mustahiq).
+2. **`permissions`**: Daftar izin akses fitur (misal: `attendance:read`, `rapot:write`).
+3. **`role_permissions`**: Relasi penghubung antara role dan permission.
+4. **`users`**: Tabel pengguna utama terintegrasi dengan Better-Auth.
+5. **`sessions`**: Sesi login pengguna (Better-Auth).
+6. **`accounts`**: Akun eksternal/kredensial pengguna (Better-Auth).
+7. **`verifications`**: Token verifikasi email/auth (Better-Auth).
+8. **`santri_refs`**: Data induk identitas santri (NIS, No Stambuk, Nama, Kelas, Kamar, Status: ACTIVE/BOYONG/CUTI).
+9. **`blok`**: Data blok asrama (misal: Blok A, Blok B).
+10. **`kamar`**: Kamar asrama santri yang terhubung ke data `blok`.
+11. **`jenjang`**: Jenjang pendidikan (I'dadiyah, Ibtida'iyyah, Tsanawiyah, Aliyah).
+12. **`tingkat`**: Tingkat kelas dalam jenjang (misal: I, II, III).
+13. **`kelas_refs`**: Kelas/rombel aktif (nama kelas, level, mustahiq_id).
+14. **`kitab_refs`**: Buku/kitab pelajaran pesantren.
+15. **`attendance`**: Catatan induk presensi bulanan per kelas.
+16. **`attendance_details`**: Rincian kehadiran santri per hari/bulan (hadir, sakit, izin, alpha).
+17. **`grades`**: Induk pengisian nilai kelas/kitab/semester.
+18. **`grade_items`**: Catatan nilai skor per santri untuk tamrin/ujian harian.
+19. **`memorization`**: Induk setoran hafalan kelas/kitab.
+20. **`memorization_items`**: Rincian hafalan santri (surah, bait/halaman, predikat: A/B/C/D).
+21. **`reports`**: Ringkasan laporan semester santri.
+22. **`activities`**: Catatan riwayat aktivitas pengguna (log login/logout, pengisian nilai).
+23. **`audit_logs`**: Log audit komprehensif perubahan tabel data (menyimpan data lama & baru).
+24. **`offline_queue`**: Antrean sinkronisasi offline (IndexedDB sync payload).
+25. **`offline_failed`**: Catatan antrean sinkronisasi offline yang gagal.
+26. **`offline_logs`**: Riwayat eksekusi sinkronisasi offline.
+27. **`media`**: Metadata berkas/gambar yang terunggah di Cloudinary.
+28. **`feature_flags`**: Konfigurasi toggle fitur sistem.
+29. **`settings`**: Pengaturan global sistem.
+30. **`notifications`**: Notifikasi sistem.
+31. **`notification_reads`**: Status baca notifikasi per pengguna.
+32. **`jadwal_pelajaran`**: Jadwal pelajaran/kitab per kelas, hari, sesi, dan kuartal.
+33. **`kelas_finalization`**: Status finalisasi penilaian kelas per semester/tahun ajaran (`DRAFT`, `SIAP_FINALISASI`, `FINAL`). Nilai terkunci penuh pada status `FINAL`.
+34. **`rapot_semester`**: Rapor semester santri (menyimpan santri_id, kelas_id, izin_count, tanpa_izin_count, nilai_akhlaq [rentang 4-8, default 8], catatan, predikat_override).
+35. **`rapot_nilai`**: Nilai kitab rapor santri (menyimpan tamrin_score, ujian_score, khosh_score [clamped 4-9], is_fixed_column).

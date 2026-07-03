@@ -1,7 +1,7 @@
 # 31. API Specification - REST Endpoints
 
 ## Base URL
-`https://api.mubtadiat.lirboyo.net/api` (atau `http://localhost:8788/api` untuk lokal)
+`https://api.mubtadiaat.id/api` (atau `http://localhost:8788/api` untuk lokal)
 
 ## Auth Endpoints (Better-Auth)
 - `POST /api/auth/sign-in/email`

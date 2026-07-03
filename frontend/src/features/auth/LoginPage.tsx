@@ -1,15 +1,13 @@
 import { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Lock, LogIn, UserPlus, User, Eye, EyeOff } from 'lucide-react';
+import { Lock, LogIn, User, Eye, EyeOff } from 'lucide-react';
 import { useNavigate } from 'react-router';
 import { GlassCard } from '../../components/ui/GlassCard';
 import { SoftInput } from '../../components/ui/SoftInput';
 import { PremiumButton } from '../../components/ui/PremiumButton';
-import { signIn, signUp } from '../../lib/auth.client';
+import { signIn } from '../../lib/auth.client';
 
 export const LoginPage = () => {
-  const [isLogin, setIsLogin] = useState(true);
-  const [name, setName] = useState('');
   const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
@@ -23,34 +21,26 @@ export const LoginPage = () => {
     setError('');
 
     // Format username to simulated email under the hood for BetterAuth compliance
-    const formattedEmail = username.includes('@') ? username : `${username}@lirboyo.net`;
+    const formattedEmail = username.includes('@') ? username : `${username}@mubtadiaat.id`;
 
     try {
-      if (isLogin) {
-        const { error: signInError } = await signIn.email({
-          email: formattedEmail,
-          password,
-        });
-        
-        if (signInError) {
-          setError(signInError.message || 'Kredensial tidak valid');
-        } else {
-          if (password === 'mubtadiaat123') {
-            localStorage.setItem('FORCE_PASSWORD_CHANGE', 'true');
-          } else {
-            localStorage.removeItem('FORCE_PASSWORD_CHANGE');
-          }
-          navigate('/dashboard');
-        }
+      const { data: authData, error: signInError } = await signIn.email({
+        email: formattedEmail,
+        password,
+      });
+      
+      if (signInError) {
+        setError(signInError.message || 'Kredensial tidak valid');
       } else {
-        const { error: signUpError } = await signUp.email({
-          name,
-          email: formattedEmail,
-          password,
-        });
-
-        if (signUpError) {
-          setError(signUpError.message || 'Gagal mendaftar akun');
+        if (password === 'mubtadiaat123') {
+          localStorage.setItem('FORCE_PASSWORD_CHANGE', 'true');
+        } else {
+          localStorage.removeItem('FORCE_PASSWORD_CHANGE');
+        }
+        
+        const userRole = (authData?.user as any)?.role;
+        if (userRole === 1) {
+          navigate('/admin/dashboard');
         } else {
           navigate('/dashboard');
         }
@@ -101,7 +91,7 @@ export const LoginPage = () => {
         <GlassCard variant="neumorph" className="p-5 sm:p-8 w-full">
           <form onSubmit={handleSubmit} className="flex flex-col gap-4 sm:gap-5">
             <h2 className="text-lg sm:text-xl font-bold text-slate-800 mb-1 sm:mb-2 text-center sm:text-left">
-              {isLogin ? 'Login ke Akun Anda' : 'Daftar Akun Baru'}
+              Login ke Akun Anda
             </h2>
             
             <AnimatePresence>
@@ -118,26 +108,7 @@ export const LoginPage = () => {
               )}
             </AnimatePresence>
 
-            {!isLogin && (
-              <motion.div
-                key="register-box"
-                initial={{ opacity: 0, height: 0 }}
-                animate={{ opacity: 1, height: 'auto' }}
-                exit={{ opacity: 0, height: 0 }}
-              >
-                <SoftInput
-                  label="Nama Lengkap"
-                  type="text"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  placeholder="Ust. Ahmad"
-                  leftIcon={<User className="w-5 h-5" />}
-                  required={!isLogin}
-                  autoComplete="off"
-                  spellCheck={false}
-                />
-              </motion.div>
-            )}
+
 
             <SoftInput
               label="Nama Pengguna (Username)"
@@ -172,20 +143,10 @@ export const LoginPage = () => {
               required
             />
 
-            <div className="flex justify-between items-center mt-2">
-              <button 
-                type="button" 
-                onClick={() => { setIsLogin(!isLogin); setError(''); }}
-                className="text-sm font-semibold text-slate-500 hover:text-blue-600 transition-colors"
-              >
-                {isLogin ? 'Belum punya akun? Daftar' : 'Sudah punya akun? Login'}
-              </button>
-              
-              {isLogin && (
-                <a href="#" className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors">
-                  Lupa Sandi?
-                </a>
-              )}
+            <div className="flex justify-end items-center mt-2">
+              <a href="#" className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors">
+                Lupa Sandi?
+              </a>
             </div>
 
             <PremiumButton 
@@ -193,9 +154,9 @@ export const LoginPage = () => {
               isLoading={loading} 
               variant="primary" 
               className="w-full mt-2"
-              rightIcon={isLogin ? <LogIn className="w-5 h-5" /> : <UserPlus className="w-5 h-5" />}
+              rightIcon={<LogIn className="w-5 h-5" />}
             >
-              {isLogin ? 'Masuk' : 'Daftar Sekarang'}
+              Masuk
             </PremiumButton>
           </form>
         </GlassCard>

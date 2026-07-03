@@ -42,6 +42,7 @@ export const users = sqliteTable('users', {
   email: text('username').unique().notNull(),
   emailVerified: integer('email_verified', { mode: 'boolean' }).notNull().default(false),
   image: text('image'),
+  role: integer('role').default(4), // 1 = Admin, 2 = Mundzir, 3 = Mufatish, 4 = Mustahiq
   ...authTimestampFields,
 });
 
@@ -81,10 +82,62 @@ export const verifications = sqliteTable('verifications', {
 // 2. Master Data Refs
 export const santriRefs = sqliteTable('santri_refs', {
   id: text('id').primaryKey(),
-  nis: text('nis').notNull(),
+  nis: text('nis'), // Keep for backward compatibility
+  noStambuk: text('no_stambuk'),
+  nik: text('nik'),
   name: text('name').notNull(),
+  tempatLahir: text('tempat_lahir'),
+  tanggalLahir: text('tanggal_lahir'),
   classId: text('class_id').notNull(),
-  status: text('status').notNull(), // e.g. 'ACTIVE', 'GRADUATED'
+  bagian: text('bagian'),
+  alamatLengkap: text('alamat_lengkap'),
+  provinsi: text('provinsi'),
+  kabupaten: text('kabupaten'),
+  kecamatan: text('kecamatan'),
+  kelurahan: text('kelurahan'),
+  kodePos: text('kode_pos'),
+  noKk: text('no_kk'),
+  namaAyah: text('nama_ayah'),
+  namaIbu: text('nama_ibu'),
+  tahunMasuk: text('tahun_masuk'),
+  tahunKeluar: text('tahun_keluar'),
+  kamar: text('kamar'),
+  customFields: text('custom_fields'), // JSON metadata
+  status: text('status').notNull(), // e.g. 'ACTIVE', 'BOYONG', 'CUTI'
+  ...timestampFields,
+});
+
+export const blok = sqliteTable('blok', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(),
+  ...timestampFields,
+});
+
+export const kamar = sqliteTable('kamar', {
+  id: text('id').primaryKey(),
+  blokId: text('blok_id').notNull().references(() => blok.id),
+  name: text('name').notNull(),
+  penasihat: text('penasihat'),
+  ...timestampFields,
+});
+
+export const jenjang = sqliteTable('jenjang', {
+  id: text('id').primaryKey(),
+  name: text('name').notNull(), // I'dadiyah, Ibtida'iyyah, Tsanawiyah, Aliyah
+  mundzirName: text('mundzir_name'),
+  ...timestampFields,
+});
+
+export const tingkat = sqliteTable('tingkat', {
+  id: text('id').primaryKey(),
+  jenjangId: text('jenjang_id').notNull().references(() => jenjang.id),
+  jenjangName: text('jenjang_name').notNull(),
+  romanName: text('roman_name').notNull(), // I, II, III
+  mufatishName: text('mufatish_name'),
+  targetNadzom: text('target_nadzom'),
+  targetBait: integer('target_bait'),
+  hasPraktek: integer('has_praktek', { mode: 'boolean' }).default(false),
+  praktekSubjects: text('praktek_subjects'), // JSON string array
   ...timestampFields,
 });
 
@@ -93,6 +146,11 @@ export const kelasRefs = sqliteTable('kelas_refs', {
   name: text('name').notNull(),
   level: text('level').notNull(),
   mustahiqId: text('mustahiq_id').notNull(), // references users.id
+  jenjangName: text('jenjang_name'),
+  tingkatName: text('tingkat_name'),
+  bagian: text('bagian'),
+  lokal: text('lokal'),
+  munawwibNames: text('munawwib_names'), // JSON array
   ...timestampFields,
 });
 
@@ -100,6 +158,11 @@ export const kitabRefs = sqliteTable('kitab_refs', {
   id: text('id').primaryKey(),
   name: text('name').notNull(),
   description: text('description'),
+  jenjangName: text('jenjang_name'),
+  tingkatName: text('tingkat_name'),
+  fanIlmu: text('fan_ilmu'),
+  pengajar: text('pengajar'),
+  waktu: text('waktu'),
   ...timestampFields,
 });
 
@@ -270,3 +333,54 @@ export const notificationReads = sqliteTable('notification_reads', {
   userId: text('user_id').notNull().references(() => users.id),
   ...timestampFields,
 });
+
+// --- e-Raport & Jadwal Pelajaran ---
+export const jadwalPelajaran = sqliteTable('jadwal_pelajaran', {
+  id: text('id').primaryKey(),
+  classId: text('class_id').notNull().references(() => kelasRefs.id),
+  kitabName: text('kitab_name').notNull(),
+  hari: text('hari').notNull(),              // السبت, الأحد, الإثنين, الثلاثاء, الأربعاء, الخميس
+  sesi: text('sesi').notNull(),              // الحصة الأولى / الحصة الثانية
+  kwartal: integer('kwartal').notNull(),      // 1 s/d 4
+  academicYear: text('academic_year').notNull(),
+  pengajar: text('pengajar'),                 // Nama pengajar (Mustahiq / Munawwibah)
+  ...timestampFields,
+});
+
+export const kelasFinalization = sqliteTable('kelas_finalization', {
+  id: text('id').primaryKey(),
+  classId: text('class_id').notNull().references(() => kelasRefs.id),
+  semester: text('semester').notNull(),          // 'I' atau 'II'
+  academicYear: text('academic_year').notNull(),  // '2025-2026'
+  status: text('status').notNull(),               // 'DRAFT', 'SIAP_FINALISASI', 'FINAL'
+  finalizedBy: text('finalized_by'),
+  finalizedAt: text('finalized_at'),
+  ...timestampFields,
+});
+
+export const rapotSemester = sqliteTable('rapot_semester', {
+  id: text('id').primaryKey(),
+  santriId: text('santri_id').notNull().references(() => santriRefs.id),
+  classId: text('class_id').notNull().references(() => kelasRefs.id),
+  semester: text('semester').notNull(),       // 'I' atau 'II'
+  academicYear: text('academic_year').notNull(),
+  izinCount: integer('izin_count').default(0),
+  tanpaIzinCount: integer('tanpa_izin_count').default(0),
+  nilaiAkhlaq: integer('nilai_akhlaq').default(8), // 4 s/d 8
+  catatan: text('catatan'),
+  predikatOverride: text('predikat_override'), // Menyimpan override manual predikat Al-Bayan
+  recordedBy: text('recorded_by').notNull(),
+  ...timestampFields,
+});
+
+export const rapotNilai = sqliteTable('rapot_nilai', {
+  id: text('id').primaryKey(),
+  rapotId: text('rapot_id').notNull().references(() => rapotSemester.id),
+  kitabName: text('kitab_name').notNull(),
+  tamrinScore: integer('tamrin_score').notNull(),  // 0 s/d 10
+  ujianScore: integer('ujian_score').notNull(),    // 0 s/d 10
+  khoshScore: integer('khosh_score').notNull(),    // hasil hitung bulat (Tamrin + Ujian)/2
+  isFixedColumn: integer('is_fixed_column').default(0), // 1 jika Khat, Qiroah, Muhafazhoh, Akhlaq
+  ...timestampFields,
+});
+

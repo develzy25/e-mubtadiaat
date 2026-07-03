@@ -20,7 +20,7 @@ export const getAttendance = async (c: Context) => {
         eq(schema.attendance.month, month)
       )).get();
 
-    let details = [];
+    let details: any[] = [];
 
     if (existingAtt) {
       // Fetch existing details
@@ -73,11 +73,7 @@ export const saveAttendance = async (c: Context) => {
       return c.json({ success: false, message: 'Missing required fields' }, 400);
     }
 
-    // Transaction
-    await db.batch([
-      // We will handle the logic inside a transaction block or batch depending on D1 support
-      // D1 supports batching, but for complex logic, we do it step by step
-    ]);
+    // Transaction - D1 supports batching, but for complex logic, we do it step by step
     
     // Check if exists
     let att = await db.select().from(schema.attendance)
@@ -104,7 +100,7 @@ export const saveAttendance = async (c: Context) => {
     // Insert new details
     const detailsToInsert = details.map((d: any) => ({
       id: `att_det_${crypto.randomUUID()}`,
-      attendanceId: att.id,
+      attendanceId: att!.id,
       santriId: d.santriId,
       hadir: d.hadir,
       sakit: d.sakit,

@@ -4,6 +4,7 @@ import { logger } from 'hono/logger';
 import { getAuth } from './lib/auth';
 import { dashboardRoutes } from './routes/dashboard.routes';
 import { attendanceRoutes } from './routes/attendance.routes';
+import { adminRoutes } from './routes/admin.routes';
 
 type Bindings = {
   DB: D1Database;
@@ -27,7 +28,7 @@ app.use('*', cors({
     return 'https://mubtadiaat.pages.dev';
   },
   allowHeaders: ['Content-Type', 'Authorization', 'Origin', 'Accept'],
-  allowMethods: ['POST', 'GET', 'OPTIONS'],
+  allowMethods: ['POST', 'GET', 'OPTIONS', 'PUT', 'DELETE'],
   exposeHeaders: ['Content-Length'],
   maxAge: 600,
   credentials: true,
@@ -43,6 +44,9 @@ app.route('/api/dashboard', dashboardRoutes);
 
 // Attendance routes
 app.route('/api/attendance', attendanceRoutes);
+
+// Admin routes
+app.route('/api/admin', adminRoutes);
 
 // Better Auth API routes handler
 app.all('/api/auth/*', (c) => {

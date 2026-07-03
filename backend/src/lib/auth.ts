@@ -42,6 +42,15 @@ export const getAuth = (
     emailAndPassword: {
       enabled: true, // We enable standard email/password login
     },
+    user: {
+      additionalFields: {
+        role: {
+          type: "number",
+          required: false,
+          defaultValue: 4
+        }
+      }
+    },
     plugins: [
       bearer(),
     ],

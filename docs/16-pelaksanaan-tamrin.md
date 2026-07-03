@@ -168,16 +168,11 @@ Status yang tersedia:
 
 # Input Nilai
 
-Nilai hanya boleh menggunakan angka:
+Nilai menggunakan angka:
 
-- 4
-- 5
-- 6
-- 7
-- 8
-- 9
+- **0 hingga 10** (integer bulat)
 
-*Tidak diperbolehkan: 1, 2, 3, 10, atau angka desimal.*
+*Angka 1, 2, 3, dan 10 diperbolehkan. Angka desimal tidak diperbolehkan.*
 
 ---
 
@@ -229,9 +224,9 @@ Mengacu Pedoman MPHM:
 
 Setelah seluruh nilai Tamrin selesai, sistem otomatis menghubungkan nilai Tamrin ke Modul Penilaian Akademik.
 
-$$\text{Nilai Khosh} = \frac{\text{Nilai Tamrin} + \text{Nilai Semester}}{2}$$
+$$\text{Nilai Khosh} = \text{Pembulatan}\left(\frac{\text{Nilai Tamrin} + \text{Nilai Semester}}{2}\right)$$
 
-*Perhitungan dilakukan otomatis oleh sistem. Mustahiq tidak menghitung manual.*
+*Perhitungan dilakukan otomatis oleh sistem dengan pembulatan MPHM (pecahan >=0.5 ke atas, <0.5 ke bawah) dan dibatasi (clamped) pada rentang minimal 4 dan maksimal 9. Mustahiq tidak menghitung manual.*
 
 ---
 

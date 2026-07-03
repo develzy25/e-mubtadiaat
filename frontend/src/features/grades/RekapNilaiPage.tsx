@@ -50,7 +50,8 @@ export const RekapNilaiPage: React.FC = () => {
   ).map((s) => {
     const tamrinScore = 8; // Mock value loaded from Tamrin database
     const ujianScore = 7;  // Mock value loaded from Exam database
-    const khoshScore = Math.round((tamrinScore + ujianScore) / 2);
+    let khoshScore = Math.round((tamrinScore + ujianScore) / 2);
+    khoshScore = Math.max(4, Math.min(9, khoshScore)); // Clamped 4-9
     return {
       santriId: s.id,
       namaLengkap: s.namaLengkap,

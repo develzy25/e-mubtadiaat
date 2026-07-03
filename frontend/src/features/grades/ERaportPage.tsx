@@ -27,13 +27,32 @@ export const ERaportPage: React.FC = () => {
   const [selectedStudent, setSelectedStudent] = useState<StudentReport | null>(null);
   const [showProtoModal, setShowProtoModal] = useState(false);
 
+  const getAlBayan = (score: number, izin: number, alpha: number): string => {
+    const pengurangIzin = Math.floor(izin / 15);
+    const pengurangAlpa = Math.floor(alpha / 5);
+    const nilaiPrestasi = Math.max(0, score - pengurangIzin - pengurangAlpa);
+    
+    if (nilaiPrestasi >= 9) return 'الجيد الأول';
+    if (nilaiPrestasi === 8) return 'الجيد الثاني';
+    if (nilaiPrestasi === 7) return 'المتوسط الأول';
+    if (nilaiPrestasi === 6) return 'المتوسط الثاني';
+    return 'الرديء';
+  };
+
   // Compile student report card mock records
   const reports: StudentReport[] = SANTRI_LIRBOYO_SEED.filter(
     (s) => s.bagianClass === 'Bagian A'
   ).map((s) => {
     const tamrinVal = 8;
     const ujianVal = 7;
-    const khoshVal = Math.round((tamrinVal + ujianVal) / 2);
+    let khoshVal = Math.round((tamrinVal + ujianVal) / 2);
+    khoshVal = Math.max(4, Math.min(9, khoshVal));
+    
+    const izinVal = 2;
+    const alphaVal = 0;
+    const pred = getAlBayan(khoshVal, izinVal, alphaVal);
+    const naik = pred === 'الرديء' ? 'Tidak Naik Kelas' : 'Naik Kelas';
+
     return {
       id: s.id,
       name: s.namaLengkap,
@@ -44,11 +63,11 @@ export const ERaportPage: React.FC = () => {
       tamrin: tamrinVal,
       ujian: ujianVal,
       khosh: khoshVal,
-      alBayan: khoshVal >= 8 ? 'الجيد الثاني' : 'المتوسط الأول',
+      alBayan: pred,
       akhlaq: 8,
-      izin: 2,
-      alpha: 0,
-      statusKenaikan: 'Naik Kelas',
+      izin: izinVal,
+      alpha: alphaVal,
+      statusKenaikan: naik,
     };
   });
 

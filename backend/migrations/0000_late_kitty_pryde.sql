@@ -275,9 +275,27 @@ CREATE TABLE `roles` (
 --> statement-breakpoint
 CREATE TABLE `santri_refs` (
 	`id` text PRIMARY KEY NOT NULL,
-	`nis` text NOT NULL,
+	`nis` text,
+	`no_stambuk` text,
+	`nik` text,
 	`name` text NOT NULL,
+	`tempat_lahir` text,
+	`tanggal_lahir` text,
 	`class_id` text NOT NULL,
+	`bagian` text,
+	`alamat_lengkap` text,
+	`provinsi` text,
+	`kabupaten` text,
+	`kecamatan` text,
+	`kelurahan` text,
+	`kode_pos` text,
+	`no_kk` text,
+	`nama_ayah` text,
+	`nama_ibu` text,
+	`tahun_masuk` text,
+	`tahun_keluar` text,
+	`kamar` text,
+	`custom_fields` text,
 	`status` text NOT NULL,
 	`created_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
 	`updated_at` text DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -309,14 +327,15 @@ CREATE UNIQUE INDEX `settings_key_unique` ON `settings` (`key`);--> statement-br
 CREATE TABLE `users` (
 	`id` text PRIMARY KEY NOT NULL,
 	`name` text NOT NULL,
-	`email` text NOT NULL,
+	`username` text NOT NULL,
 	`email_verified` integer DEFAULT false NOT NULL,
 	`image` text,
+	`role` integer DEFAULT 4,
 	`created_at` integer NOT NULL,
 	`updated_at` integer NOT NULL
 );
 --> statement-breakpoint
-CREATE UNIQUE INDEX `users_email_unique` ON `users` (`email`);--> statement-breakpoint
+CREATE UNIQUE INDEX `users_username_unique` ON `users` (`username`);--> statement-breakpoint
 CREATE TABLE `verifications` (
 	`id` text PRIMARY KEY NOT NULL,
 	`identifier` text NOT NULL,

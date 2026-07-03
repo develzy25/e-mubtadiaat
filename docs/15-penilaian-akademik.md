@@ -1,59 +1,83 @@
 # 15. Penilaian Akademik - MPHM Lirboyo
 
-Dokumen ini menjelaskan rumus-rumus resmi penilaian akademik di Madrasah Putri Hidayatul Mubtadi'at (MPHM) Lirboyo Kediri.
+Dokumen ini menjelaskan rumus-rumus resmi penilaian akademik di Madrasah Putri Hidayatul Mubtadi'at (MPHM) Lirboyo Kediri sesuai buku pedoman resmi dan cetak biru final modul penilaian.
 
 ---
 
-## Rumus Nilai Khosh
+## Batasan & Rentang Nilai
 
-Nilai Khosh (nilai rapor per mata pelajaran/kitab) dihitung secara otomatis oleh sistem dengan menggabungkan Nilai Tamrin dan Nilai Ujian Semester.
+1. **Mata Pelajaran / Kitab (Tamrin & Ujian Semester)**:
+   - Rentang nilai yang sah: **0 hingga 10** (integer bulat).
+   - Nilai 1, 2, 3, dan 10 diperbolehkan.
+2. **Nilai Akhlaq (Perilaku/Sikap)**:
+   - Diinput menggunakan angka dengan nilai maksimal **8** (rentang **4 hingga 8**).
+   - Nilai default awal sistem adalah **8**.
 
-$$\text{Khosh} = \frac{\text{Tamrin} + \text{Ujian Semester}}{2}$$
+---
+
+## Rumus Nilai Khosh ( نتيجة الخصوصي )
+
+Nilai Khosh (nilai akhir rapor siswi per mata pelajaran/kitab) dihitung secara otomatis oleh sistem dengan menggabungkan Nilai Tamrin dan Nilai Ujian Semester:
+
+$$\text{Khosh} = \text{Pembulatan}\left(\frac{\text{Tamrin} + \text{Ujian Semester}}{2}\right)$$
+
+### Batasan Nilai Khosh (Clamping)
+Nilai Khosh yang ditampilkan pada rapor **wajib dibatasi** di rentang:
+- **Minimal = 4**
+- **Maksimal = 9**
+
+*Jika hasil perhitungan rata-rata bulat $< 4$, maka otomatis diset menjadi $4$. Jika $> 9$, maka otomatis diset menjadi $9$.*
 
 ### Contoh Perhitungan Nilai Khosh
-
-- Nilai Tamrin = 8
-- Nilai Ujian Semester = 6
-- Perhitungan: $(8 + 6) / 2 = 7$
-- Nilai Khosh = 7
+- **Kasus 1**: Nilai Tamrin = 10, Ujian Semester = 10 $\rightarrow (10+10)/2 = 10 \rightarrow$ Dibatasi (clamped) menjadi **9**.
+- **Kasus 2**: Nilai Tamrin = 2, Ujian Semester = 2 $\rightarrow (2+2)/2 = 2 \rightarrow$ Dibatasi (clamped) menjadi **4**.
+- **Kasus 3**: Nilai Tamrin = 8, Ujian Semester = 7 $\rightarrow (8+7)/2 = 7.5 \rightarrow$ Dibulatkan menjadi **8**.
 
 ---
 
-## Rumus Nilai 'Am (Rata-rata Kelas)
+## Rumus Nilai 'Am / نتيجة العام (Rata-rata Kelas)
 
-Nilai 'Am adalah akumulasi rata-rata nilai Khosh untuk seluruh santri putri di dalam satu kelas tertentu. Rumus perhitungannya adalah:
+Nilai 'Am dihitung secara otomatis setelah status kelas diubah menjadi **FINAL** oleh Admin/Operator:
 
-$$\text{'Am} = \frac{\sum \text{Nilai Khosh Seluruh Siswa}}{\text{Jumlah Siswa}}$$
+$$\text{Nilai 'Am} = \text{Pembulatan}\left(\frac{\sum \text{Nilai Khos Seluruh Siswi Aktif}}{\text{Jumlah Siswi Aktif dalam Kelas}}\right)$$
 
-### Contoh Perhitungan Nilai 'Am
-
-- Jumlah Siswa = 60
-- Total Akumulasi Nilai Khosh = 420
-- Perhitungan: $420 / 60 = 7$
-- Nilai 'Am = 7
+### Ketentuan Siswi & Perhitungan:
+- Hanya menghitung siswi dengan status **ACTIVE** yang masih berada dalam kelas.
+- Siswi mutasi keluar atau yang sudah dikeluarkan dari kelas **tidak dihitung** (dikeluarkan dari pembagi & pembilang).
+- Siswi yang belum mengikuti Her Ujian tetap dihitung menggunakan nilai **4** dalam penjumlahan rata-rata kelas.
 
 ---
 
-## Perhitungan Nilai Rapor & Pembulatan
+## Perhitungan Nilai Rapor & Pembulatan MPHM
 
-Penilaian raport santri putri diatur sebagai berikut:
-
-- Rentang nilai rapor yang sah hanya berkisar antara **4 hingga 9**.
-- Sistem pembulatan desimal:
-  - Pecahan $< 0.50$ dibulatkan ke bawah (misal: $7.49 \rightarrow 7$).
-  - Pecahan $\ge 0.50$ dibulatkan ke atas (misal: $7.50 \rightarrow 8$).
+Sistem pembulatan desimal untuk Nilai Khosh dan Rata-rata Kelas mengikuti standar MPHM:
+- Pecahan `x.0` s/d `x.4` dibulatkan ke bawah (misal: $7.4 \rightarrow 7$).
+- Pecahan `x.5` s/d `x.9` dibulatkan ke atas (misal: $7.5 \rightarrow 8$).
 
 ---
 
-## Nilai Akhlaq & Kedisiplinan Presensi
+## Perhitungan Nilai Prestasi (Al-Bayan) & Pengurangan Absensi
 
-Nilai Akhlaq santri dinilai dengan parameter berikut:
+Nilai Prestasi akhir dihitung dengan menggabungkan nilai kedua semester (Semester I & II) dan dikurangi poin pelanggaran absensi:
 
-- **Nilai Maksimal**: 8
-- **Nilai Minimal**: 4
+1. **Langkah 1 (Total Nilai)**:
+   $$\text{Total Nilai Khos} = \sum \text{Nilai Khos Sem I} + \sum \text{Nilai Khos Sem II}$$
+2. **Langkah 2 (Rata-rata)**:
+   $$\text{Rata-rata} = \frac{\text{Total Nilai Khos}}{\text{Jumlah Mata Pelajaran Sem I} + \text{Jumlah Mata Pelajaran Sem II}}$$
+3. **Langkah 3 (Pembulatan Awal)**:
+   Bulatkan nilai rata-rata ke integer terdekat menggunakan aturan pembulatan MPHM.
+   *Penting: Pembulatan dilakukan terlebih dahulu sebelum pengurangan absensi.*
+4. **Langkah 4 (Pengurangan Izin)**:
+   $$\text{Pengurang Izin} = \text{floor}\left(\frac{\text{Jumlah Izin}}{15}\right)$$
+5. **Langkah 5 (Pengurangan Alpa / Tanpa Izin)**:
+   $$\text{Pengurang Alpa} = \text{floor}\left(\frac{\text{Jumlah Bighoiri Izin}}{5}\right)$$
+6. **Rumus Akhir Nilai Prestasi**:
+   $$\text{Nilai Prestasi} = \text{Rata-rata Bulat} - \text{Pengurang Izin} - \text{Pengurang Alpa}$$
 
-### Penurunan Poin Akhlaq Otomatis
-
-- Setiap akumulasi **Izin 20 hari** menurunkan nilai Akhlaq sebesar **1 poin**.
-- Setiap akumulasi **Alpha 6 hari** menurunkan nilai Akhlaq sebesar **1 poin**.
-- Akumulasi izin 15 hari atau alpha 5 hari dapat menurunkan tingkat prestasi santri.
+### Klasifikasi Predikat Prestasi (Al-Bayan)
+Berdasarkan Nilai Prestasi akhir:
+* **9**: **الجيد الأول** (Jayyid Awwal)
+* **8**: **الجيد الثاني** (Jayyid Tsani)
+* **7**: **المتوسط الأول** (Mutawassith Awwal)
+* **6**: **المتوسط الثاني** (Mutawassith Tsani)
+* **$\le$ 5**: **الرديء** (Rodi') (Tidak Naik Kelas)

@@ -4,30 +4,40 @@ Dokumen ini menjelaskan kriteria kenaikan kelas, kelulusan, penentuan prestasi (
 
 ---
 
-## Rumus Nilai Prestasi (Jayyid/Mutawassith/Rodi')
+## Rumus Nilai Prestasi (Al Bayan)
 
-Nilai Prestasi diperoleh dari perhitungan rata-rata nilai Khosh Semester I dan Semester II:
+Nilai Prestasi akhir dihitung dengan menggabungkan nilai kedua semester (S1 & S2) lalu dikurangi poin pelanggaran absensi:
 
-$$\text{Nilai Prestasi} = \frac{\sum (\text{Nilai Khosh Sem I} + \text{Nilai Khosh Sem II})}{\text{Jumlah Mapel}}$$
+1. **Langkah 1 (Total Nilai)**:
+   $$\text{Total Nilai Khos} = \sum \text{Nilai Khos S1} + \sum \text{Nilai Khos S2}$$
+2. **Langkah 2 (Rata-rata)**:
+   $$\text{Rata-rata Awal} = \frac{\text{Total Nilai Khos}}{\text{Jumlah Mapel S1} + \text{Jumlah Mapel S2}}$$
+3. **Langkah 3 (Pembulatan Awal)**:
+   Bulatkan nilai rata-rata ke integer terdekat dengan aturan pembulatan MPHM (pecahan >=0.5 ke atas, <0.5 ke bawah) sebelum dikurangi absensi.
+4. **Langkah 4 (Pengurangan Absensi)**:
+   - **Izin**: Dikurangi **1 poin** untuk setiap kelipatan **15 hari** izin (`floor(Izin / 15)`).
+   - **Alpa / Tanpa Izin**: Dikurangi **1 poin** untuk setiap kelipatan **5 hari** alpa (`floor(Alpa / 5)`).
+5. **Rumus Akhir**:
+   $$\text{Nilai Prestasi} = \text{Rata-rata Bulat} - \text{Pengurang Izin} - \text{Pengurang Alpa}$$
 
-### Klasifikasi Predikat Prestasi & Al Bayan (Arab)
+### Klasifikasi Predikat Prestasi (Al Bayan)
+Predikat akhir terhitung otomatis berdasarkan hasil Nilai Prestasi akhir:
 
-- **9** ➜ Jayyid Awal (الجيد الأول)
-- **8** ➜ Jayyid Tsani (الجيد الثاني)
-- **7** ➜ Mutawassith Awal (المتوسط الأول)
-- **6** ➜ Mutawassith Tsani (المتوسط الثاني)
-- **5 kebawah** ➜ Rodi' (الرديء)
-- **Mutsbat** ➜ المثبت (Hadir tamrin saja tanpa ujian)
+- **9** $\rightarrow$ **الجيد الأول** (Jayyid Awwal)
+- **8** $\rightarrow$ **الجيد الثاني** (Jayyid Tsani)
+- **7** $\rightarrow$ **المتوسط الأول** (Mutawassith Awwal)
+- **6** $\rightarrow$ **المتوسط الثاني** (Mutawassith Tsani)
+- **$\le$ 5** $\rightarrow$ **الرديء** (Rodi')
+- **Mutsbat** $\rightarrow$ **المثبت** (Hadir tamrin saja tanpa ujian)
 
----
+*Catatan: Seluruh hasil perhitungan predikat otomatis ini dapat dimodifikasi/di-override secara manual oleh Mustahiq atau Admin jika diperlukan.*
 
 ## Status Kenaikan Kelas
 
-- **Jayyid Awal / Jayyid Tsani**: Naik Kelas.
-- **Mutawassith Awal / Mutawassith Tsani**: Naik Kelas.
-- **Rodi'**: Tidak Naik Kelas.
+- **الجيد الأول / الجيد الثاني / المتوسط الأول / المتوسط الثاني**: Naik Kelas.
+- **الرديء**: Tidak Naik Kelas.
 
-*Catatan: Semua keputusan sistem di atas tetap dapat dioverride (diubah secara manual) oleh Mudir melalui menu Sidang Kenaikan Kelas.*
+*Catatan: Keputusan kenaikan kelas sistem tetap dapat di-override (diubah secara manual) oleh Admin/Mudir melalui menu Sidang Kenaikan Kelas.*
 
 ---
 
